@@ -252,21 +252,27 @@ Users can only see the transactions associated with their own account.
 
 ## 📸 Screenshots
 
-Add screenshots of your project here.
+<p align="center">
+  <strong>🏠 Home Page & Hero Section</strong><br>
+  <img src="./screenshots/home.png" alt="Home Page" width="700">
+</p>
 
-Example:
+<p align="center">
+  <strong>🔐 Authentication (Login & Register)</strong><br>
+  <img src="./screenshots/login.png" alt="Login Page" width="340">&nbsp;&nbsp;
+  <img src="./screenshots/register.png" alt="Register Page" width="340">
+</p>
 
-```markdown
-![Home Page](./screenshots/home.png)
+<p align="center">
+  <strong>📊 Transactions Dashboard</strong><br>
+  <img src="./screenshots/transactions.png" alt="Transactions Dashboard" width="700">
+</p>
 
-![Login Page](./screenshots/login.png)
+<p align="center">
+  <strong>💸 Add Transaction Form</strong><br>
+  <img src="./screenshots/add-transaction.png" alt="Add Transaction" width="500">
+</p>
 
-![Register Page](./screenshots/register.png)
-
-![Transactions Dashboard](./screenshots/transactions.png)
-
-![Add Transaction](./screenshots/add-transaction.png)
-```
 
 ---
 
