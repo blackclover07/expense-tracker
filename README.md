@@ -1,8 +1,8 @@
-# 💰 Expense Tracker — V1
+# 💰 Expense Tracker — V2
 
 A simple **Django-based Expense Tracker** that allows users to create an account, log in, and manage their income and expenses.
 
-This is **Version 1** of the project, focused on building the core authentication and transaction-management functionality.
+**Version 2** builds upon the core functionality of Version 1 by introducing full transaction management, including **editing and deleting transactions**, along with improved transaction security and user experience.
 
 ---
 
@@ -15,16 +15,21 @@ This is **Version 1** of the project, focused on building the core authenticatio
 * User logout
 * Authentication-protected transaction pages
 * User-specific transactions
+* Users can only access their own transactions
 
 ### 💸 Transaction Management
 
 * Add income transactions
 * Add expense transactions
+* Edit existing transactions
+* Delete existing transactions
+* Delete confirmation page
 * Transaction categories
 * Transaction descriptions
 * Transaction dates
 * Transaction amounts
 * Automatically associate transactions with the logged-in user
+* Prevent users from accessing another user's transactions
 
 ### 📊 Dashboard
 
@@ -35,6 +40,10 @@ The transaction dashboard displays:
 * Current balance
 * Recent transactions
 * Transaction type indicators
+* Income and expense styling
+* Add transaction button
+* Edit transaction action
+* Delete transaction action
 
 ### 🎨 UI
 
@@ -44,8 +53,59 @@ The transaction dashboard displays:
 * Bootstrap carousel
 * Login and registration pages
 * Transaction dashboard
+* Transaction form
+* Edit transaction form
+* Delete confirmation page
 * Hover effects and cards
 * Django message alerts
+* Bootstrap Icons
+
+---
+
+## ✨ What's New in V2
+
+Version 2 focuses on making transaction management more complete.
+
+### Transaction Editing
+
+Users can now edit an existing transaction and update:
+
+* Amount
+* Category
+* Transaction type
+* Description
+* Date
+
+The existing transaction is loaded into a Django `ModelForm` and populated automatically.
+
+### Transaction Deletion
+
+Users can now delete transactions.
+
+Before deleting a transaction, the application displays a confirmation page containing the transaction details.
+
+The user must explicitly confirm the deletion.
+
+### Transaction Security
+
+Transactions are filtered using both:
+
+```python
+transaction_id
+user=request.user
+```
+
+This ensures that a user cannot access or modify another user's transaction simply by changing the transaction ID in the URL.
+
+For example:
+
+```python
+get_object_or_404(
+    Transaction,
+    id=transaction_id,
+    user=request.user
+)
+```
 
 ---
 
@@ -58,6 +118,7 @@ The transaction dashboard displays:
 | SQLite           | Database              |
 | Django Templates | Frontend templating   |
 | Bootstrap 5      | UI and styling        |
+| Bootstrap Icons  | Interface icons       |
 | HTML             | Page structure        |
 | CSS              | Custom styling        |
 
@@ -96,6 +157,15 @@ expense-tracker/
 ├── templates/
 │   └── base.html
 │
+├── screenshots/
+│   ├── home.png
+│   ├── login.png
+│   ├── register.png
+│   ├── transactions.png
+│   ├── add-transaction.png
+│   ├── edit-transaction.png
+│   └── delete-transaction.png
+│
 ├── manage.py
 ├── db.sqlite3
 └── README.md
@@ -126,7 +196,15 @@ EXPENSE
 
 Transactions are connected to Django's built-in `User` model using a foreign key.
 
-This means every user can have their own separate collection of transactions.
+```python
+user = models.ForeignKey(
+    User,
+    on_delete=models.CASCADE,
+    related_name="transactions",
+)
+```
+
+This means every user has their own separate collection of transactions.
 
 ---
 
@@ -151,7 +229,99 @@ Expenses   = ₹12,500
 Balance    = ₹12,500
 ```
 
-The calculations are performed using Django's ORM aggregation functionality.
+The calculations are performed using Django's ORM aggregation functionality and `Sum()`.
+
+---
+
+## 🔄 Transaction CRUD Flow
+
+Version 2 supports the complete basic CRUD workflow for transactions:
+
+```text
+                ┌───────────────┐
+                │     Create    │
+                └───────┬───────┘
+                        ↓
+                ┌───────────────┐
+                │      Read     │
+                └───────┬───────┘
+                        ↓
+                ┌───────────────┐
+                │     Update    │
+                └───────┬───────┘
+                        ↓
+                ┌───────────────┐
+                │     Delete    │
+                └───────────────┘
+```
+
+### Create
+
+Users can add new income or expense transactions.
+
+### Read
+
+Users can view their transactions on the transaction dashboard.
+
+### Update
+
+Users can open an existing transaction and modify its details.
+
+### Delete
+
+Users can delete a transaction after confirming the deletion.
+
+---
+
+## 🔑 Authentication Flow
+
+The basic user flow is:
+
+```text
+Register
+   ↓
+Login
+   ↓
+Transactions Dashboard
+   ↓
+Add Transaction
+   ↓
+View Transaction
+   ↓
+Edit / Delete Transaction
+   ↓
+Dashboard Updated
+```
+
+Users can only see and manage the transactions associated with their own account.
+
+---
+
+## 🔒 Transaction Security
+
+Transaction-related views verify both the transaction ID and the currently authenticated user.
+
+For example:
+
+```python
+transaction = get_object_or_404(
+    Transaction,
+    id=transaction_id,
+    user=request.user
+)
+```
+
+This prevents a user from accessing another user's transaction by manually changing the transaction ID in the URL.
+
+For example:
+
+```text
+/transactions/edit/15/
+```
+
+If transaction `15` belongs to another user, Django returns a `404` response instead of exposing the transaction.
+
+The same ownership check is applied to transaction deletion.
 
 ---
 
@@ -228,57 +398,51 @@ http://127.0.0.1:8000/
 
 ---
 
-## 🔑 Authentication Flow
-
-The basic user flow is:
-
-```text
-Register
-   ↓
-Login
-   ↓
-Transactions Dashboard
-   ↓
-Add Transaction
-   ↓
-Transaction saved for current user
-   ↓
-Dashboard updated
-```
-
-Users can only see the transactions associated with their own account.
-
----
-
 ## 📸 Screenshots
 
+### 🏠 Home Page & Hero Section
+
 <p align="center">
-  <strong>🏠 Home Page & Hero Section</strong><br>
   <img src="./screenshots/home.png" alt="Home Page" width="700">
 </p>
 
+### 🔐 Authentication
+
 <p align="center">
-  <strong>🔐 Authentication (Login & Register)</strong><br>
-  <img src="./screenshots/login.png" alt="Login Page" width="340">&nbsp;&nbsp;
+  <img src="./screenshots/login.png" alt="Login Page" width="340">
+  &nbsp;&nbsp;
   <img src="./screenshots/register.png" alt="Register Page" width="340">
 </p>
 
+### 📊 Transactions Dashboard
+
 <p align="center">
-  <strong>📊 Transactions Dashboard</strong><br>
   <img src="./screenshots/transactions.png" alt="Transactions Dashboard" width="700">
 </p>
 
+### 💸 Add Transaction
+
 <p align="center">
-  <strong>💸 Add Transaction Form</strong><br>
   <img src="./screenshots/add-transaction.png" alt="Add Transaction" width="500">
 </p>
 
+### ✏️ Edit Transaction
+
+<p align="center">
+  <img src="./screenshots/edit-transaction.png" alt="Edit Transaction" width="500">
+</p>
+
+### 🗑️ Delete Transaction
+
+<p align="center">
+  <img src="./screenshots/delete-transaction.png" alt="Delete Transaction" width="500">
+</p>
 
 ---
 
 ## 🧠 What I Learned
 
-While building Version 1, I worked with:
+While building Version 1 and Version 2, I worked with:
 
 * Django project and app structure
 * Django URL routing
@@ -290,25 +454,30 @@ While building Version 1, I worked with:
 * Django messages framework
 * Django forms
 * ModelForms
+* Populating ModelForms with existing model instances
 * Django ORM
 * ForeignKey relationships
 * QuerySets
 * `filter()`
+* `get_object_or_404()`
 * `aggregate()`
 * `Sum()`
 * Authentication decorators
+* User-specific database queries
+* CRUD operations
 * Bootstrap integration
-* Responsive layouts
 * Bootstrap components
+* Bootstrap Icons
+* Responsive layouts
+* Form validation
+* Transaction ownership and access control
 
 ---
 
-## 🔮 Future Improvements — V2
+## 🔮 Future Improvements — V3
 
 Possible improvements for the next version:
 
-* [ ] Edit transactions
-* [ ] Delete transactions
 * [ ] Search transactions
 * [ ] Filter by category
 * [ ] Filter by transaction type
@@ -328,13 +497,60 @@ Possible improvements for the next version:
 
 ---
 
-## 📌 Version
+## 📚 Version History
 
-**Current Version:** `v1.0.0`
+### v2.0.0
 
-Version 1 focuses on the fundamental functionality of the application:
+Version 2 introduced complete basic transaction CRUD functionality.
+
+**Added:**
+
+* Edit transactions
+* Delete transactions
+* Delete confirmation page
+* Populated edit forms
+* Transaction ownership protection
+* Improved transaction actions
+* Improved dashboard UI
+* Bootstrap Icons
+
+**Focus:**
+
+> **Transaction CRUD + Security + Improved User Experience**
+
+---
+
+### v1.0.0
+
+The initial version focused on the core functionality of the application.
+
+**Included:**
+
+* User registration
+* User login
+* User logout
+* Authentication-protected pages
+* Add transactions
+* View transactions
+* Income and expense calculations
+* Balance calculation
+* Basic dashboard
+* Bootstrap UI
+* Django messages
+
+**Focus:**
 
 > **Authentication + Transaction Management + Basic Dashboard**
+
+---
+
+## 📌 Version
+
+**Current Version:** `v2.0.0`
+
+The current release provides:
+
+> **Authentication + Transaction CRUD + Dashboard + Transaction Security**
 
 ---
 
@@ -342,12 +558,24 @@ Version 1 focuses on the fundamental functionality of the application:
 
 **Sagar Dey**
 
-Built as a learning project to practice **Django, Python, databases, authentication, ORM, and Bootstrap**.
+Built as a learning project to practice:
+
+**Django • Python • Databases • Authentication • ORM • CRUD • Bootstrap**
 
 ---
 
 ## ⭐ Future Goal
 
-The long-term goal is to turn this simple tracker into a more complete personal-finance application with analytics, charts, budgeting tools, and a modern frontend.
+The long-term goal is to turn this simple tracker into a more complete personal-finance application with:
 
----
+* Advanced analytics
+* Charts and visualizations
+* Budgeting tools
+* Monthly financial reports
+* Category-based spending analysis
+* REST API
+* Modern frontend
+* PostgreSQL
+* Production deployment
+
+The project will continue evolving as new Django and full-stack development concepts are learned.
