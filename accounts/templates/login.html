@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Login | Expense Tracker
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center align-items-stretch g-0">
+
+        <!-- Left Side - Image -->
+        <div class="col-lg-6 d-none d-lg-block">
+
+            <div class="h-100 overflow-hidden rounded-start-4 shadow">
+
+                <img
+                    src="{% static 'accounts/login.jpg' %}"
+                    alt="Expense management"
+                    class="w-100 h-100"
+                    style="object-fit: cover; min-height: 550px;"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- Right Side - Login Form -->
+        <div class="col-lg-5">
+
+            <div class="h-100 bg-white border rounded-end-4 shadow p-5">
+
+                <div class="mb-5">
+
+                    <h1 class="fw-bold display-5">
+                        Welcome Back
+                    </h1>
+
+                    <p class="text-muted mt-2">
+                        Login to continue managing your finances.
+                    </p>
+
+                </div>
+
+
+                {% if form.errors %}
+
+                    <div class="alert alert-danger">
+                        Invalid username or password.
+                    </div>
+
+                {% endif %}
+
+
+                <form
+                    method="POST"
+                    action="{% url 'login' %}"
+                >
+
+                    {% csrf_token %}
+
+
+                    <!-- Username -->
+                    <div class="mb-4">
+
+                        <label
+                            for="username"
+                            class="form-label fw-semibold"
+                        >
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control form-control-lg"
+                            id="username"
+                            name="username"
+                            placeholder="Enter your username"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Password -->
+                    <div class="mb-4">
+
+                        <label
+                            for="password"
+                            class="form-label fw-semibold"
+                        >
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            class="form-control form-control-lg"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary btn-lg w-100"
+                    >
+                        Login
+                    </button>
+
+                </form>
+
+
+                <div class="text-center mt-4">
+
+                    <p class="text-muted mb-0">
+                        Don't have an account?
+                    </p>
+
+                    <a
+                        href="{% url 'register' %}"
+                        class="text-primary fw-semibold text-decoration-none"
+                    >
+                        Create an account
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

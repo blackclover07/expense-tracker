@@ -1,0 +1,106 @@
+# Python
+
+**pycache**/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environment
+
+venv/
+.venv/
+env/
+ENV/
+
+# Django
+
+*.log
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Environment Variables / Secrets
+
+.env
+.env.*
+!.env.example
+
+# Django static files generated for production
+
+staticfiles/
+
+# Coverage / Testing
+
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Type checking
+
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# VS Code
+
+.vscode/
+
+# PyCharm
+
+.idea/
+
+# Jupyter Notebook
+
+.ipynb_checkpoints/
+
+# OS generated files
+
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Build / Distribution
+
+build/
+dist/
+*.egg-info/
+
+# Temporary files
+
+*.tmp
+*.temp
+*.swp
+*.swo
+
+````
+
+### One important thing for your project
+
+Because you're using **SQLite**, I've included:
+
+```gitignore
+db.sqlite3
+```
+
+That means your local users and transactions **will not be pushed to GitHub**. That's generally what you want.
+
+And because you have multiple Django apps with their own `static/` folders, **don't ignore those folders**. Your source images like:
+
+```text
+home/static/carousel-1.jpg
+users/static/register.jpg
+```
+
+will still be committed normally.
+
+Also, if you later create a `.env.example`, it **will still be committed** because of:
+
+```gitignore
+.env
+.env.*
+!.env.example
+```
+
+That's useful for showing other developers which environment variables they need without exposing your actual secrets.
+````

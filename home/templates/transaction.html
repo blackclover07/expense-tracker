@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Transactions | Expense Tracker
+{% endblock %}
+
+{% block content %}
+
+
+{% if user.is_authenticated %}
+<div class="container py-5">
+   <h1 class="display-3 text-end">Welcome Back, <span class="text-uppercase">{{user.username}}</span></h1>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="display-5 fw-bold">
+                Transactions
+            </h1>
+
+            <p class="text-muted mb-0">
+                Manage your income and expenses.
+            </p>
+        </div>
+
+        <a href="{% url "transactions_create" %}" class="btn btn-primary">
+            + Add Transaction
+        </a>
+
+    </div>
+
+
+    <!-- Summary -->
+   <div class="row g-4 mb-5">
+
+    <div class="col-md-4">
+        <div class="card card-hover">
+            <div class="card-body">
+                <h6 class="text-muted">Total Income</h6>
+
+                <h2 class="fw-bold text-success">
+                    ₹{{ total_income }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card card-hover">
+            <div class="card-body">
+                <h6 class="text-muted">Total Expenses</h6>
+
+                <h2 class="fw-bold text-danger">
+                    ₹{{ total_expenses }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card card-hover">
+            <div class="card-body">
+                <h6 class="text-muted">Balance</h6>
+
+                <h2 class="fw-bold">
+                    ₹{{ balance }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+    <!-- Transactions -->
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-white py-3">
+            <h4 class="mb-0">
+                Recent Transactions
+            </h4>
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th class="text-end">Amount</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+    {% for transaction in transactions %}
+
+        <tr>
+            <td>
+                {{ transaction.date|date:"d M Y" }}
+            </td>
+
+            <td>
+                {{ transaction.category }}
+            </td>
+
+            <td>
+                {{ transaction.description }}
+            </td>
+
+            <td>
+
+                {% if transaction.transaction_type == "INCOME" %}
+
+                    <span class="badge text-bg-success">
+                        Income
+                    </span>
+
+                {% else %}
+
+                    <span class="badge text-bg-danger">
+                        Expense
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+            <td
+                class="text-end fw-bold
+                {% if transaction.transaction_type == 'INCOME' %}
+                    text-success
+                {% else %}
+                    text-danger
+                {% endif %}"
+            >
+
+                {% if transaction.transaction_type == "INCOME" %}
+                    + ₹{{ transaction.amount }}
+                {% else %}
+                    - ₹{{ transaction.amount }}
+                {% endif %}
+
+            </td>
+        </tr>
+
+    {% empty %}
+
+        <tr>
+            <td colspan="5" class="text-center py-5 text-muted">
+                No transactions yet.
+            </td>
+        </tr>
+
+    {% endfor %}
+
+</tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %} 
+{% block content %}
+
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="w-50">
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input
+                type="email"
+                class="form-control"
+                id="email"
+                placeholder="name@example.com"
+            />
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea
+                class="form-control"
+                id="description"
+                rows="3"
+            ></textarea>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
