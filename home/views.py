@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 
 from transaction.forms import TransactionForm
 from transaction.models import Transaction
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -67,3 +68,32 @@ def create_transaction(request):
     else:
         form = TransactionForm()
     return render(request, "transaction-form.html", {"form": form})
+
+
+@login_required
+def edit_transaction(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
+
+    if request.method == "POST":
+        form = TransactionForm(request.POST, instance=transaction)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Transaction updated successfully.")
+            return redirect("transactions")
+    else:
+        form = TransactionForm(instance=transaction)
+
+    return render(request, "transaction-edit.html", {"form": form})
+
+
+@login_required
+def delete_transaction(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
+
+    if request.method == "POST":
+        transaction.delete()
+        messages.success(request, "Transaction deleted successfully.")
+        return redirect("transactions")
+
+    return render(request, "transaction-delete.html", {"transaction": transaction})
