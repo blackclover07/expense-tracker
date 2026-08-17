@@ -257,15 +257,15 @@ Add screenshots of your project here.
 Example:
 
 ```markdown
-![Home Page](screenshots/home.png)
+![Home Page](./screenshots/home.png)
 
-![Login Page](screenshots/login.png)
+![Login Page](./screenshots/login.png)
 
-![Register Page](screenshots/register.png)
+![Register Page](./screenshots/register.png)
 
-![Transactions Dashboard](screenshots/transactions.png)
+![Transactions Dashboard](./screenshots/transactions.png)
 
-![Add Transaction](screenshots/add-transaction.png)
+![Add Transaction](./screenshots/add-transaction.png)
 ```
 
 ---
